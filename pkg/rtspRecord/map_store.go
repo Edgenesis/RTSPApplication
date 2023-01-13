@@ -7,6 +7,8 @@ import (
 	"sync"
 )
 
+// PersistMap persist map of registered devices
+// when the service restarts, we also need to restart the commands of all running devices
 type PersistMap struct {
 	mu   sync.Mutex
 	m    map[string]*Device

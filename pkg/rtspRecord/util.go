@@ -14,6 +14,7 @@ const (
 	UsernameSecretField = "username"
 )
 
+// trans: transfer the raw http body to request structure
 func trans[T Request](r *http.Request) (*T, error) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -28,6 +29,7 @@ func trans[T Request](r *http.Request) (*T, error) {
 	return request, nil
 }
 
+// getCredential from k8s cluster
 func getCredential(name string) (string, string, error) {
 	secret, err := utils.GetSecret(name)
 	if err != nil {

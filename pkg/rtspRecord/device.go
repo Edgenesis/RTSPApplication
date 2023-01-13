@@ -14,6 +14,7 @@ import (
 // CmdMapMemory map[string]*exec.Cmd, from deviceName to running command, no persistence
 var CmdMapMemory sync.Map
 
+// Device store necessary info of the rtsp server
 type Device struct {
 	DeviceName string
 	In         string
@@ -21,6 +22,7 @@ type Device struct {
 	Clip       int
 }
 
+// create a process to run the ffmpeg command
 func (d *Device) createCmd() *exec.Cmd {
 	cmd := d.compile()
 	go func() {
@@ -34,6 +36,7 @@ func (d *Device) createCmd() *exec.Cmd {
 }
 
 func (d *Device) startRecord() {
+	// store the process handle into a memory map, need to be stopped when unregistering
 	CmdMapMemory.Store(d.DeviceName, d.createCmd())
 	d.Clip += 1
 	d.Running = true
@@ -55,6 +58,7 @@ func (d *Device) stopRecord() error {
 	return nil
 }
 
+// compile output the command using the info in the Device
 func (d *Device) compile() *exec.Cmd {
 	out := filepath.Join(VideoSavePath, d.DeviceName+"_"+strconv.Itoa(d.Clip)+".mp4")
 	return ffmpeg.Input(d.In, ffmpeg.KwArgs{"rtsp_transport": "tcp"}).
