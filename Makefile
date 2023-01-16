@@ -5,9 +5,6 @@ IMAGE_VERSION = nightly
 fmt: ## Run go fmt against code.
 	go fmt ./...
 
-vet: ## Run go vet against code.
-	go vet ./...
-
 .PHONY: test
 test: fmt envtest ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) -p path)" go test -v -race -coverprofile=coverage.out -covermode=atomic $(shell go list ./... | grep -v -E '/cmd|/mockdevice')
@@ -22,5 +19,11 @@ buildx-build-image-rtsp-record:
 		--build-arg PROJECT_ROOT="${PROJECT_ROOT}" ${PROJECT_ROOT} \
 		-t edgehub/rtsp-record:${IMAGE_VERSION} --load
 
-load: buildx-build-image-rtsp-record
+buildx-build-image-ffmpeg:
+	docker buildx build --platform=linux/$(shell go env GOARCH) \
+		--build-arg PROJECT_ROOT="${PROJECT_ROOT}/videos" ${PROJECT_ROOT}/videos \
+		-t edgehub/ffmpeg:${IMAGE_VERSION} --load
+
+load: buildx-build-image-rtsp-record buildx-build-image-ffmpeg
 	kind load docker-image edgehub/rtsp-record:${IMAGE_VERSION}
+	kind load docker-image edgehub/ffmpeg:${IMAGE_VERSION}

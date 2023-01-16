@@ -2,7 +2,7 @@ package rtspRecord
 
 import (
 	"fmt"
-	"github.com/Edgenesis/RTSPApplication/pkg/logger"
+	"github.com/edgenesis/shifu/pkg/logger"
 	"net/http"
 )
 

@@ -10,9 +10,10 @@ metadata:
   namespace: shifu-app
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
   name: rtsp-record-secret-view-clusterrolebinding
+  namespace: shifu-app
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -23,9 +24,10 @@ subjects:
     namespace: shifu-app
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
   name: secret-view
+  namespace: shifu-app
 rules:
   - apiGroups:
       - "" # "" indicates the core API group

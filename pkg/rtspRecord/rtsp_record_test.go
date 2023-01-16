@@ -3,7 +3,7 @@ package rtspRecord
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/Edgenesis/RTSPApplication/pkg/utils"
+	"github.com/edgenesis/shifu/pkg/telemetryservice/utils"
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

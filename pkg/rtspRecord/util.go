@@ -3,8 +3,8 @@ package rtspRecord
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Edgenesis/RTSPApplication/pkg/logger"
-	"github.com/Edgenesis/RTSPApplication/pkg/utils"
+	"github.com/edgenesis/shifu/pkg/logger"
+	"github.com/edgenesis/shifu/pkg/telemetryservice/utils"
 	"io"
 	"net/http"
 )

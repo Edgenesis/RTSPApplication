@@ -75,8 +75,16 @@ make test
    rtsp-record.shifu-app.svc.cluster.local/unregister
    ```
 
+## Export the videos
 
-### Uninstall
+Video is named `{device_name}_{clip_number}.mp4`. Use `kubect cp` to export the video.
+
+```bash
+POD=$(kubectl get pod -l app=rtsp-record-deployment -n shifu-app -o jsonpath="{.items[0].metadata.name}")
+kubectl cp shifu-app/$POD:/data/video/xyz_0.mp4 ./video_save_name.mp4
+```
+
+## Uninstall
 
 ```bah
 kubectl delete -f ./example/pre

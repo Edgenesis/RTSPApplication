@@ -7,7 +7,8 @@ ENV GO111MODULE=on
 
 COPY go.mod go.mod
 COPY go.sum go.sum
-COPY ./ ./
+COPY pkg pkg
+COPY main.go main.go
 
 RUN go mod download -x
 

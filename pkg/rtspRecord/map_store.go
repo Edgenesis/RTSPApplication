@@ -2,7 +2,7 @@ package rtspRecord
 
 import (
 	"encoding/gob"
-	"github.com/Edgenesis/RTSPApplication/pkg/logger"
+	"github.com/edgenesis/shifu/pkg/logger"
 	"os"
 	"sync"
 )
@@ -15,8 +15,10 @@ type PersistMap struct {
 	file *os.File
 }
 
-var store *PersistMap
-var needPersist bool
+var (
+	store       *PersistMap
+	needPersist bool
+)
 
 func InitPersistMap(filename string) {
 	store = &PersistMap{m: make(map[string]*Device)}

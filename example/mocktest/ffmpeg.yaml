@@ -6,7 +6,7 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - image: jrottenberg/ffmpeg:5.1.2-alpine313
+    - image: edgehub/ffmpeg:nightly
       command: [ "/bin/sh" ]
-      args: [ "-c", "ffmpeg -re -stream_loop -1 -i https://file-examples.com/storage/fea8fc38fd63bc5c39cf20b/2017/04/file_example_MP4_480_1_5MG.mp4 -c copy -f rtsp -rtsp_transport tcp rtsp://rtsp-server.shifu-app.svc.cluster.local:8554/mystream" ]
+      args: [ "-c", "ffmpeg -re -stream_loop -1 -i sample1.mp4 -c copy -f rtsp -rtsp_transport tcp rtsp://rtsp-server.shifu-app.svc.cluster.local:8554/mystream" ]
       name: ffmpeg
