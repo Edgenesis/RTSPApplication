@@ -12,6 +12,9 @@ var serverListenPort = os.Getenv("SERVER_LISTEN_PORT")
 const (
 	storePersistFilePath  = "/data/mapStore"
 	videoPersistDirectory = "/data/video"
+	registerUrl           = "/register"
+	unregisterUrl         = "/unregister"
+	updateUrl             = "/update"
 )
 
 func main() {
@@ -23,9 +26,9 @@ func main() {
 	}
 	rtspRecord.VideoSavePath = videoPersistDirectory
 	mux := http.NewServeMux()
-	mux.HandleFunc("/register", rtspRecord.Register)
-	mux.HandleFunc("/unregister", rtspRecord.Unregister)
-	mux.HandleFunc("/update", rtspRecord.Update)
+	mux.HandleFunc(registerUrl, rtspRecord.Register)
+	mux.HandleFunc(unregisterUrl, rtspRecord.Unregister)
+	mux.HandleFunc(updateUrl, rtspRecord.Update)
 	logger.Infof("Listening at %#v", serverListenPort)
 	err = http.ListenAndServe(serverListenPort, mux)
 	if err != nil {
