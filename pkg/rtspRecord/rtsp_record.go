@@ -15,15 +15,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error to Unmarshal request body", http.StatusBadRequest)
 		return
 	}
-	store.mu.Lock()
-	if _, exist := store.m[request.DeviceName]; exist {
-		logger.Errorf("duplicate registration for device: %v", request.DeviceName)
-		http.Error(w, "duplicate registration for device: "+request.DeviceName, http.StatusBadRequest)
-		store.mu.Unlock()
-		return
-	}
-	store.mu.Unlock()
-
 	username, password, err := getCredential(request.SecretName)
 	if err != nil {
 		logger.Errorf("unable to get username and password, error: %v", err)
@@ -36,11 +27,17 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		Running:    false,
 		Clip:       0,
 	}
+
+	store.mu.Lock()
+	defer store.mu.Unlock()
+	if _, exist := store.m[request.DeviceName]; exist {
+		logger.Errorf("duplicate registration for device: %v", request.DeviceName)
+		http.Error(w, "duplicate registration for device: "+request.DeviceName, http.StatusBadRequest)
+		return
+	}
 	if request.Record {
 		d.startRecord()
 	}
-	store.mu.Lock()
-	defer store.mu.Unlock()
 	store.m[request.DeviceName] = d
 	err = store.save()
 	if err != nil {
