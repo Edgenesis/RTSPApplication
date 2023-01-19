@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"sync"
 	"syscall"
+	"time"
 )
 
 // CmdMapMemory map[string]*exec.Cmd, from deviceName to running command, no persistence
@@ -20,6 +21,7 @@ type Device struct {
 	In         string
 	Running    bool
 	Clip       int
+	StartTime  time.Time
 }
 
 // create a process to run the ffmpeg command
@@ -36,6 +38,7 @@ func (d *Device) createCmd() *exec.Cmd {
 }
 
 func (d *Device) startRecord() {
+	d.StartTime = time.Now()
 	// store the process handle into a memory map, need to be stopped when unregistering
 	CmdMapMemory.Store(d.DeviceName, d.createCmd())
 	d.Clip += 1
@@ -60,7 +63,7 @@ func (d *Device) stopRecord() error {
 
 // compile output the command using the info in the Device
 func (d *Device) compile() *exec.Cmd {
-	out := filepath.Join(VideoSavePath, d.DeviceName+"_"+strconv.Itoa(d.Clip)+".mp4")
+	out := filepath.Join(VideoSavePath, d.DeviceName+"_"+strconv.Itoa(d.Clip)+"_"+d.StartTime.Format("2006-01-02_15-04-05")+".mp4")
 	return ffmpeg.Input(d.In, ffmpeg.KwArgs{"rtsp_transport": "tcp"}).
 		Output(out, ffmpeg.KwArgs{"c": "copy"}).
 		OverWriteOutput().ErrorToStdOut().Compile()

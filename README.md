@@ -39,7 +39,7 @@ make test
 
 1. create a mock rtsp server, a ffmpeg service that sends the rtsp stream forever and a curl client
 
-   ```ba
+   ```bash
    kubectl apply -f ./example/mocktest
    ```
 
@@ -77,11 +77,14 @@ make test
 
 ## Export the videos
 
-Video is named `{device_name}_{clip_number}.mp4`. Use `kubect cp` to export the video.
+Video is named `{device_name}_{clip_number}_{YYYY-MM-DD_hh-mm-ss}.mp4`. Use `kubect cp` to export the video.
 
 ```bash
 POD=$(kubectl get pod -l app=rtsp-record-deployment -n shifu-app -o jsonpath="{.items[0].metadata.name}")
-kubectl cp shifu-app/$POD:/data/video/xyz_0.mp4 ./video_save_name.mp4
+# list all videos
+kubectl exec ${POD} -n shifu-app -- ls /data/video -hl
+# export the video you want
+kubectl cp shifu-app/$POD:/data/video/xyz_0_2023-01-19_08-14-35.mp4 ./video_save_name.mp4
 ```
 
 ## Uninstall
@@ -89,6 +92,3 @@ kubectl cp shifu-app/$POD:/data/video/xyz_0.mp4 ./video_save_name.mp4
 ```bah
 kubectl delete -f ./example/pre
 ```
-
-
-
