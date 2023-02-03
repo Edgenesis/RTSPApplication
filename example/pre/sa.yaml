@@ -16,7 +16,7 @@ metadata:
   namespace: shifu-app
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: Role
   name: secret-view
 subjects:
   - kind: ServiceAccount
