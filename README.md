@@ -18,7 +18,6 @@ kubectl apply -f ./example/pre
 ## Build and load the image
 
 ```bash
-go mod tidy
 make load
 ```
 
