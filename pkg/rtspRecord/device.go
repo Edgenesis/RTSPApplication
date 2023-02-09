@@ -2,14 +2,15 @@ package rtspRecord
 
 import (
 	"fmt"
-	"github.com/edgenesis/shifu/pkg/logger"
-	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/edgenesis/shifu/pkg/logger"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
 // CmdMapMemory map[string]*exec.Cmd, from deviceName to running command, no persistence
@@ -65,6 +66,6 @@ func (d *Device) stopRecord() error {
 func (d *Device) compile() *exec.Cmd {
 	out := filepath.Join(VideoSavePath, d.DeviceName+"_"+strconv.Itoa(d.Clip)+"_"+d.StartTime.Format("2006-01-02_15-04-05")+".mp4")
 	return ffmpeg.Input(d.In, ffmpeg.KwArgs{"rtsp_transport": "tcp"}).
-		Output(out, ffmpeg.KwArgs{"c": "copy"}).
+		Output(out, ffmpeg.KwArgs{"c:v": "copy"}).
 		OverWriteOutput().ErrorToStdOut().Compile()
 }
