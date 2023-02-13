@@ -1,0 +1,118 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shifu-app
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rtsp-record-sa
+  namespace: shifu-app
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rtsp-record-secret-view-clusterrolebinding
+  namespace: shifu-app
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: secret-view
+subjects:
+  - kind: ServiceAccount
+    name: rtsp-record-sa
+    namespace: shifu-app
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secret-view
+  namespace: shifu-app
+rules:
+  - apiGroups:
+      - "" # "" indicates the core API group
+    resources:
+      - "secrets"
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rtsp-record-deployment
+  name: rtsp-record-deployment
+  namespace: shifu-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rtsp-record-deployment
+  template:
+    metadata:
+      labels:
+        app: rtsp-record-deployment
+    spec:
+      containers:
+        - image: edgehub/rtsp-record:nightly
+          name: deviceshifu-rtsp-record
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVER_LISTEN_PORT
+              value: :8080
+            - name: EDGEDEVICE_NAMESPACE
+              value: shifu-app
+          volumeMounts:
+            - name: storage-pv
+              mountPath: /data
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      volumes:
+        - name: storage-pv
+          persistentVolumeClaim:
+            claimName: rtsp-pvc
+      serviceAccountName: rtsp-record-sa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rtsp-record-deployment
+  name: rtsp-record
+  namespace: shifu-app
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: rtsp-record-deployment
+  type: NodePort
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rtsp-pv
+  namespace: shifu-app
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/rtsp"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rtsp-pvc
+  namespace: shifu-app
+spec:
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
