@@ -17,7 +17,7 @@ $(ENVTEST): $(LOCALBIN)
 buildx-build-image-rtsp-record:
 	docker buildx build --platform=linux/$(shell go env GOARCH) \
 		--build-arg PROJECT_ROOT="${PROJECT_ROOT}" ${PROJECT_ROOT} \
-		-t edgehub/rtsp-record:${IMAGE_VERSION} --load
+		-t edgenesis/rtsp-record:${IMAGE_VERSION} --load
 
 buildx-build-image-ffmpeg:
 	docker buildx build --platform=linux/$(shell go env GOARCH) \
@@ -25,5 +25,5 @@ buildx-build-image-ffmpeg:
 		-t edgehub/ffmpeg:${IMAGE_VERSION} --load
 
 load: buildx-build-image-rtsp-record buildx-build-image-ffmpeg
-	kind load docker-image edgehub/rtsp-record:${IMAGE_VERSION}
+	kind load docker-image edgenesis/rtsp-record:${IMAGE_VERSION}
 	kind load docker-image edgehub/ffmpeg:${IMAGE_VERSION}

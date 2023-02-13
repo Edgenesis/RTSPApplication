@@ -53,7 +53,7 @@ spec:
         app: rtsp-record-deployment
     spec:
       containers:
-        - image: edgehub/rtsp-record:nightly
+        - image: edgenesis/rtsp-record:nightly
           name: deviceshifu-rtsp-record
           ports:
             - containerPort: 8080
