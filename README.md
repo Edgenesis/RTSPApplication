@@ -40,7 +40,9 @@ make test
 1. create a mock rtsp server, a ffmpeg service that sends the rtsp stream forever and a curl client
 
    ```bash
-   kubectl apply -f ./example/mocktest
+   kubectl apply -f ./example/mocktest/client.yaml
+   kubectl apply -f ./example/mocktest/rtsp-server.yaml 
+   kubectl apply -f ./example/mocktest/ffmpeg.yaml
    ```
 
 2. create a secret store the username and password of the rtsp server
